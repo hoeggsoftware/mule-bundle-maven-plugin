@@ -54,5 +54,11 @@
                 <addedToClasspath>true</addedToClasspath>
             </configuration>
         </component>
+        <component>
+            <role>software.hoegg.mule.TransformZipUnArchiver</role>
+            <role-hint>transform-zip</role-hint>
+            <implementation>software.hoegg.mule.TransformZipUnArchiver</implementation>
+            <instantiation-strategy>per-lookup</instantiation-strategy>
+        </component>
     </components>
 </component-set>
