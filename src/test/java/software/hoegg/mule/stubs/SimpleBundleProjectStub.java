@@ -23,7 +23,7 @@ public class SimpleBundleProjectStub extends MavenProjectStub {
 
 	@Override
 	public Set<Artifact> getArtifacts() {
-		Set<Artifact> artifacts = new HashSet<Artifact>();
+		Set<Artifact> artifacts = new HashSet<>();
 		artifacts.add(stubApplicationArtifact("test-app1"));
 		artifacts.add(stubApplicationArtifact("test-app2"));
 		return artifacts;

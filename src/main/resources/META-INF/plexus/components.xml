@@ -15,9 +15,6 @@
                             <process-resources>
                                 org.apache.maven.plugins:maven-resources-plugin:resources
                             </process-resources>
-                            <compile>
-                                software.hoegg.mule:mule-bundle-maven-plugin:create
-                            </compile>
                             <process-test-resources>
                                 org.apache.maven.plugins:maven-resources-plugin:testResources
                             </process-test-resources>
@@ -27,6 +24,9 @@
                             <test>
                                 org.apache.maven.plugins:maven-surefire-plugin:test
                             </test>
+                            <prepare-package>
+                                software.hoegg.mule:mule-bundle-maven-plugin:create
+                            </prepare-package>
                             <package>
                                 software.hoegg.mule:mule-bundle-maven-plugin:package
                             </package>
