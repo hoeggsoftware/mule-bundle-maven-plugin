@@ -2,6 +2,7 @@ package software.hoegg.mule;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Predicate;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
@@ -12,26 +13,27 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.archiver.UnArchiver;
 import org.codehaus.plexus.components.io.fileselectors.FileSelector;
 import org.codehaus.plexus.components.io.fileselectors.IncludeExcludeFileSelector;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.*;
 
 /**
  * Creates a single mule application by bundling together the applications in the dependencies
  */
-@Mojo(name = "create", requiresDependencyResolution = ResolutionScope.COMPILE)
+@Mojo(name = "create", requiresDependencyResolution = ResolutionScope.COMPILE_PLUS_RUNTIME, requiresProject = true)
 public class ApplicationBundleMojo extends AbstractMojo {
 
-	@Component
-	protected MavenProject mavenProject;
+	@Parameter( defaultValue = "${project}", readonly = true, required = true)
+	protected MavenProject project;
 
 	@Component
 	protected TransformZipUnArchiver unArchiver;
 
-	@Parameter(defaultValue = "${project.build.directory}/mule-bundle", required = true)
+	@Parameter( defaultValue = "${project.build.directory}/mule-bundle", required = true)
 	protected File outputDirectory;
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
@@ -54,6 +56,19 @@ public class ApplicationBundleMojo extends AbstractMojo {
 		}
 
 		getLog().info("Bundled mule configurations: " + StringUtils.join(transformer.getIncludedFiles(), ","));
+		final Properties deployProperties = new Properties();
+		deployProperties.setProperty("config.resources", StringUtils.join(transformer.getIncludedFiles(), ","));
+		final File muleDeployPropertiesFile = new File(outputDirectory, "mule-deploy.properties");
+		try {
+			muleDeployPropertiesFile.createNewFile();
+			final FileOutputStream out = new FileOutputStream(muleDeployPropertiesFile);
+			deployProperties.store(out, "");
+			out.flush();
+			IOUtils.closeQuietly(out);
+		}
+		catch (IOException e) {
+			throw new MojoFailureException("Could not create bundle mule-deploy.properties", e);
+		}
 	}
 
 	private IncludeExcludeFileSelector muleConfigSelector() {
@@ -65,7 +80,7 @@ public class ApplicationBundleMojo extends AbstractMojo {
 	}
 
 	private Set<Artifact> getZipDependencies() {
-		return CollectionUtils.select(mavenProject.getArtifacts(), new Predicate<Artifact>() {
+		return CollectionUtils.select(project.getArtifacts(), new Predicate<Artifact>() {
 			public boolean evaluate(Artifact a) {
 				return "zip".equals(a.getType());
 			}
