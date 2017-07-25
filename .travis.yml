@@ -1,2 +1,3 @@
-install: "mvn clean compile"
-script: "mvn -U clean test"
+language: java
+install: "mvn -s .travis.maven-settings.xml clean compile"
+script: "mvn -s .travis.maven-settings.xml -U clean test"
