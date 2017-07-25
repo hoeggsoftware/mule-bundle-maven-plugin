@@ -24,8 +24,8 @@ import java.util.*;
 /**
  * Creates a single mule application by bundling together the applications in the dependencies
  */
-@Mojo(name = "create", requiresDependencyResolution = ResolutionScope.COMPILE, requiresProject = true)
-public class ApplicationBundleMojo extends AbstractMojo {
+@Mojo(name = "bundle", requiresDependencyResolution = ResolutionScope.COMPILE, requiresProject = true)
+public class PrepareBundleMojo extends AbstractMojo {
 
 	@Parameter( defaultValue = "${project}", readonly = true, required = true)
 	protected MavenProject project;

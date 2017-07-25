@@ -19,8 +19,7 @@ import java.util.zip.ZipOutputStream;
 import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
 
-@RunWith(MockitoJUnitRunner.class)
-public class ApplicationBundleMojoTest {
+public class PrepareBundleMojoTest {
 
 	private static String basedir;
 
@@ -45,7 +44,6 @@ public class ApplicationBundleMojoTest {
 			}
 		}
 	}
-
 
 	private void compressSubDirectories(File root, File subdirectory, ZipOutputStream zip) throws IOException {
 		for (File f : subdirectory.listFiles()) {
@@ -106,7 +104,7 @@ public class ApplicationBundleMojoTest {
 	}
 
 	private void execute() throws Exception {
-		ApplicationBundleMojo mojo = (ApplicationBundleMojo) rule.lookupMojo("create", new File(bundleProjectDir(), "pom.xml"));
+		PrepareBundleMojo mojo = (PrepareBundleMojo) rule.lookupMojo("bundle", new File(bundleProjectDir(), "pom.xml"));
 		mojo.execute();
 	}
 
@@ -139,10 +137,5 @@ public class ApplicationBundleMojoTest {
 	private File bundleTargetDir() {
 		return new File( basedir,
 			"target/bundle-target/mule-bundle" );
-	}
-
-	private File testingLocalRepositoryDir() {
-		return new File( basedir,
-			"target/testing-local-repository");
 	}
 }
