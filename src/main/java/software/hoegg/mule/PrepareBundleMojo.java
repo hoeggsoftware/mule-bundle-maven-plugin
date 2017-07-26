@@ -15,7 +15,6 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.components.io.fileselectors.FileSelector;
 import org.codehaus.plexus.components.io.fileselectors.IncludeExcludeFileSelector;
-import org.mule.tools.maven.plugin.app.Exclusion;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -45,6 +44,12 @@ public class PrepareBundleMojo extends AbstractMojo {
 		getLog().debug("Should bundle " + StringUtils.join(getZipDependencies(), ","));
 		outputDirectory.mkdirs();
 
+		final List<String> includedFiles = bundleConfigFiles();
+		getLog().info("Bundled mule configuration files: " + StringUtils.join(includedFiles, ","));
+		writeMuleDeployProperties(includedFiles);
+	}
+
+	private List<String> bundleConfigFiles() {
 		unArchiver.setDestDirectory(outputDirectory);
 		unArchiver.setFileSelectors(new FileSelector[] {
 			muleConfigSelector()
@@ -58,10 +63,13 @@ public class PrepareBundleMojo extends AbstractMojo {
 			transformer.setPrefix(appArtifact.getArtifactId() + ".");
 			unArchiver.extract();
 		}
+		return transformer.getIncludedFiles();
+	}
 
-		getLog().info("Bundled mule configurations: " + StringUtils.join(transformer.getIncludedFiles(), ","));
+	private void writeMuleDeployProperties(List<String> includedFiles) throws MojoFailureException {
 		final Properties deployProperties = new Properties();
-		deployProperties.setProperty("config.resources", StringUtils.join(transformer.getIncludedFiles(), ","));
+		deployProperties.setProperty("config.resources", StringUtils
+			.join(includedFiles, ","));
 		final File muleDeployPropertiesFile = new File(outputDirectory, "mule-deploy.properties");
 		try {
 			muleDeployPropertiesFile.createNewFile();
