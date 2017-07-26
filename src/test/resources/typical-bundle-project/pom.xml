@@ -11,27 +11,6 @@
         <mule.version>3.8.4</mule.version>
     </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.twg.mule</groupId>
-            <artifactId>ratings-exp-api</artifactId>
-            <version>1.1.0</version>
-            <type>zip</type>
-        </dependency>
-        <dependency>
-            <groupId>com.twg.mule</groupId>
-            <artifactId>ratings-exp-soap</artifactId>
-            <version>1.0.1</version>
-            <type>zip</type>
-        </dependency>
-        <dependency>
-            <groupId>com.twg.mule</groupId>
-            <artifactId>contract-exp-api</artifactId>
-            <version>1.0.0</version>
-            <type>zip</type>
-        </dependency>
-    </dependencies>
-
     <build>
         <plugins>
             <plugin>
