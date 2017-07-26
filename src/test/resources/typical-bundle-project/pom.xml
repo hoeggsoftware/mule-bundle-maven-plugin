@@ -3,13 +3,34 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>software.hoegg.mule.test</groupId>
-    <artifactId>simple-bundle</artifactId>
+    <artifactId>typical-bundle</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>mule-bundle</packaging>
 
     <properties>
         <mule.version>3.8.4</mule.version>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.twg.mule</groupId>
+            <artifactId>ratings-exp-api</artifactId>
+            <version>1.1.0</version>
+            <type>zip</type>
+        </dependency>
+        <dependency>
+            <groupId>com.twg.mule</groupId>
+            <artifactId>ratings-exp-soap</artifactId>
+            <version>1.0.1</version>
+            <type>zip</type>
+        </dependency>
+        <dependency>
+            <groupId>com.twg.mule</groupId>
+            <artifactId>contract-exp-api</artifactId>
+            <version>1.0.0</version>
+            <type>zip</type>
+        </dependency>
+    </dependencies>
 
     <build>
         <plugins>
@@ -19,8 +40,9 @@
                 <version>1.0.0-SNAPSHOT</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <project implementation="software.hoegg.mule.stubs.SimpleBundleProjectStub"/>
+                    <project implementation="software.hoegg.mule.stubs.TypicalBundleProjectStub"/>
                     <outputDirectory>target/bundle-target/mule-bundle</outputDirectory>
+                    <packagingExcludes>**/*unbundled.xml</packagingExcludes>
                 </configuration>
             </plugin>
         </plugins>

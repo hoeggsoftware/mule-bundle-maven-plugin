@@ -9,7 +9,7 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
-public class SimpleBundleProjectStub extends MavenProjectStub {
+public class SimpleBundleProjectStub extends AbstractBundleProjectStub {
 
 	public SimpleBundleProjectStub() {
 		readModel(new File(getBasedir(), "pom.xml"));
@@ -24,21 +24,9 @@ public class SimpleBundleProjectStub extends MavenProjectStub {
 	@Override
 	public Set<Artifact> getArtifacts() {
 		Set<Artifact> artifacts = new HashSet<>();
-		artifacts.add(stubApplicationArtifact("test-app1"));
-		artifacts.add(stubApplicationArtifact("test-app2"));
+		artifacts.add(stubApplicationArtifact("simple-app1"));
+		artifacts.add(stubApplicationArtifact("simple-app2"));
 		return artifacts;
 	}
 
-	private Artifact stubApplicationArtifact(String name) {
-		ArtifactStub a = new ArtifactStub();
-		a.setArtifactId(name);
-		a.setType("zip");
-		a.setFile(new File(pluginTestDir(), name + ".zip"));
-		return a;
-	}
-
-	private File pluginTestDir() {
-		return new File( super.getBasedir(),
-			"target/test-bundle-resources");
-	}
 }

@@ -15,6 +15,7 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.components.io.fileselectors.FileSelector;
 import org.codehaus.plexus.components.io.fileselectors.IncludeExcludeFileSelector;
+import org.mule.tools.maven.plugin.app.Exclusion;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -35,6 +36,9 @@ public class PrepareBundleMojo extends AbstractMojo {
 
 	@Parameter( defaultValue = "${project.build.directory}/mule-bundle", required = true)
 	protected File outputDirectory;
+
+	@Parameter( defaultValue = "**/*unbundled.xml")
+	protected String packagingExcludes;
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
 
@@ -76,6 +80,9 @@ public class PrepareBundleMojo extends AbstractMojo {
 		s.setIncludes(new String[] {
 			"*.xml"
 		});
+		if (StringUtils.isNotEmpty(packagingExcludes)) {
+			s.setExcludes(packagingExcludes.split(","));
+		}
 		return s;
 	}
 
@@ -88,8 +95,8 @@ public class PrepareBundleMojo extends AbstractMojo {
 	}
 
 	public class PrefixMuleConfigTransformer implements TransformZipUnArchiver.Transformer {
-		private String prefix;
-		private List<String> includedFiles = new ArrayList<String>();
+			private String prefix;
+			private List<String> includedFiles = new ArrayList<String>();
 
 		public File transformDestinationDirectory(TransformZipUnArchiver.EntryContext context) {
 			return context.getDestinationDirectory();

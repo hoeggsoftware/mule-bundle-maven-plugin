@@ -4,8 +4,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.maven.plugin.testing.MojoRule;
 import org.junit.*;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,6 +27,11 @@ public class PrepareBundleMojoTest {
 	@BeforeClass
 	public static void getSystemProperties() {
 		basedir = System.getProperty( "basedir" );
+	}
+
+	@Before
+	public void cleanBundleDir() {
+		FileUtils.deleteQuietly(bundleTargetDir());
 	}
 
 	@Before
@@ -61,7 +64,7 @@ public class PrepareBundleMojoTest {
 
 	@Test
 	public void shouldGenerateDeploymentDescriptor() throws Exception {
-		execute();
+		execute(simpleBundleProjectDir());
 
 		Properties deployProps = getBundleMuleDeployProperties();
 		assertTrue("Missing expected property config.resources",
@@ -72,29 +75,42 @@ public class PrepareBundleMojoTest {
 
 	@Test
 	public void shouldPrefixConfigurationFilenamesWithArtifactId() throws Exception {
-		execute();
+		execute(simpleBundleProjectDir());
 
 		Properties deployProps = getBundleMuleDeployProperties();
 		assertTrue("Missing expected property config.resources",
 			deployProps.containsKey("config.resources"));
 		List<String> configResources = Arrays.asList(deployProps.getProperty("config.resources").split(","));
 		assertThat(configResources, containsInAnyOrder(
-			"test-app1.config1.xml",
-			"test-app1.config2.xml",
-			"test-app1.globals.xml",
-			"test-app2.config-a.xml",
-			"test-app2.globals.xml"));
+			"simple-app1.config1.xml",
+			"simple-app1.config2.xml",
+			"simple-app1.globals.xml",
+			"simple-app2.config-a.xml",
+			"simple-app2.globals.xml"));
+	}
+
+	@Test
+	public void shouldExcludeUnbundledConfigsByDefault() throws Exception {
+		execute(realisticBundleProjectDir());
+
+		Properties deployProps = getBundleMuleDeployProperties();
+		assertTrue("Missing expected property config.resources",
+			deployProps.containsKey("config.resources"));
+		List<String> configResources = Arrays.asList(deployProps.getProperty("config.resources").split(","));
+		assertThat(configResources, not(hasItem(containsString("unbundled"))));
+
+		assertThat(Arrays.asList(bundleTargetDir().list()), not(hasItem(containsString( "unbundled"))));
 	}
 
 	@Test
 	public void shouldCopyConfigurationFiles() throws Exception {
-		execute();
+		execute(simpleBundleProjectDir());
 
-		assertBundledFileContents("test-app1.config1.xml", "<config1/>");
-		assertBundledFileContents("test-app1.config2.xml", "<config2/>");
-		assertBundledFileContents("test-app1.globals.xml", "<globals/>");
-		assertBundledFileContents("test-app2.config-a.xml", "<config-a/>");
-		assertBundledFileContents("test-app2.globals.xml", "<globals/>");
+		assertBundledFileContents("simple-app1.config1.xml", "<config1/>");
+		assertBundledFileContents("simple-app1.config2.xml", "<config2/>");
+		assertBundledFileContents("simple-app1.globals.xml", "<globals/>");
+		assertBundledFileContents("simple-app2.config-a.xml", "<config-a/>");
+		assertBundledFileContents("simple-app2.globals.xml", "<globals/>");
 	}
 
 	private void assertBundledFileContents(String filename, String contents) throws IOException {
@@ -103,8 +119,9 @@ public class PrepareBundleMojoTest {
 		assertEquals(contents, FileUtils.readFileToString(f1, Charset.defaultCharset()));
 	}
 
-	private void execute() throws Exception {
-		PrepareBundleMojo mojo = (PrepareBundleMojo) rule.lookupMojo("bundle", new File(bundleProjectDir(), "pom.xml"));
+	private void execute(File projectDir) throws Exception {
+		final File pomFile = new File(projectDir, "pom.xml");
+		PrepareBundleMojo mojo = (PrepareBundleMojo) rule.lookupMojo("bundle", pomFile);
 		mojo.execute();
 	}
 
@@ -119,9 +136,14 @@ public class PrepareBundleMojoTest {
 		return deployProps;
 	}
 
-	private File bundleProjectDir() {
+	private File simpleBundleProjectDir() {
 		return new File( basedir,
 			"target/test-classes/simple-bundle-project" );
+	}
+
+	private File realisticBundleProjectDir() {
+		return new File( basedir,
+			"target/test-classes/typical-bundle-project" );
 	}
 
 	private File bundledAppsDir() {
