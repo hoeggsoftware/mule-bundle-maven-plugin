@@ -15,7 +15,8 @@
 # Phase: Prepare Package
 1. Prefix and copy mule config files from dependencies
 2. filter out `*-unbundled.xml`
-4. Generate `mule-deploy.properties`
+3. Generate `mule-deploy.properties`
+4. Combine contents of `api/` 
 5. Combine all jars from `lib/` (or use maven to resolve dependencies)
 6. Combine classes from `classes/`
 # Phase: Package
