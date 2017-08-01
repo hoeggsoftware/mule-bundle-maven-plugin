@@ -114,7 +114,6 @@ public class PrepareBundleMojoTest {
 	}
 
 	@Test
-	@Ignore("test for next feature")
 	public void shouldCopyDependenciesToLib() throws Exception {
 		execute(realisticBundleProjectDir());
 

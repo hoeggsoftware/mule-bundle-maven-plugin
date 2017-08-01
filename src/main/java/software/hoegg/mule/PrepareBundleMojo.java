@@ -16,6 +16,7 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.components.io.fileselectors.FileSelector;
 import org.codehaus.plexus.components.io.fileselectors.IncludeExcludeFileSelector;
+import org.codehaus.plexus.util.FileUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -48,6 +49,22 @@ public class PrepareBundleMojo extends AbstractMojo {
 		final List<String> includedFiles = bundleConfigFiles();
 		getLog().info("Bundled mule configuration files: " + StringUtils.join(includedFiles, ","));
 		writeMuleDeployProperties(includedFiles);
+		bundleLibDependencies();
+	}
+
+	private void bundleLibDependencies() throws MojoFailureException {
+		File libDir = new File(outputDirectory, "lib");
+		if (! libDir.exists()) {
+			libDir.mkdirs();
+		}
+		for (Artifact a : getJarDependencies()) {
+			try {
+				FileUtils.copyFileToDirectory(a.getFile(), libDir);
+			}
+			catch (IOException e) {
+				throw new MojoFailureException("Unable to copy dependency to bundle lib", e);
+			}
+		}
 	}
 
 	private List<String> bundleConfigFiles() {
@@ -98,6 +115,14 @@ public class PrepareBundleMojo extends AbstractMojo {
 		return CollectionUtils.select(project.getArtifacts(), new Predicate<Artifact>() {
 			public boolean evaluate(Artifact a) {
 				return "zip".equals(a.getType());
+			}
+		}, new HashSet<Artifact>());
+	}
+
+	private Set<Artifact> getJarDependencies() {
+		return CollectionUtils.select(project.getArtifacts(), new Predicate<Artifact>() {
+			@Override public boolean evaluate(Artifact a) {
+				return "jar".equals(a.getType());
 			}
 		}, new HashSet<Artifact>());
 	}
