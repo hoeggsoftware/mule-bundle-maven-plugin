@@ -2,6 +2,7 @@ package software.hoegg.mule;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Predicate;
+import org.apache.commons.collections4.Transformer;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.artifact.Artifact;
@@ -37,7 +38,7 @@ public class PrepareBundleMojo extends AbstractMojo {
 	protected File outputDirectory;
 
 	@Parameter( defaultValue = "**/*unbundled.xml")
-	protected String packagingExcludes;
+	protected String configExcludes;
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
 
@@ -68,8 +69,7 @@ public class PrepareBundleMojo extends AbstractMojo {
 
 	private void writeMuleDeployProperties(List<String> includedFiles) throws MojoFailureException {
 		final Properties deployProperties = new Properties();
-		deployProperties.setProperty("config.resources", StringUtils
-			.join(includedFiles, ","));
+		deployProperties.setProperty("config.resources", StringUtils.join(includedFiles, ","));
 		final File muleDeployPropertiesFile = new File(outputDirectory, "mule-deploy.properties");
 		try {
 			muleDeployPropertiesFile.createNewFile();
@@ -88,8 +88,8 @@ public class PrepareBundleMojo extends AbstractMojo {
 		s.setIncludes(new String[] {
 			"*.xml"
 		});
-		if (StringUtils.isNotEmpty(packagingExcludes)) {
-			s.setExcludes(packagingExcludes.split(","));
+		if (StringUtils.isNotEmpty(configExcludes)) {
+			s.setExcludes(configExcludes.split(","));
 		}
 		return s;
 	}

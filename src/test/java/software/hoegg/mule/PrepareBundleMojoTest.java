@@ -113,6 +113,19 @@ public class PrepareBundleMojoTest {
 		assertBundledFileContents("simple-app2.globals.xml", "<globals/>");
 	}
 
+	@Test
+	@Ignore("test for next feature")
+	public void shouldCopyDependenciesToLib() throws Exception {
+		execute(realisticBundleProjectDir());
+
+		File libDir = new File(bundleTargetDir(), "lib");
+		assertTrue("bundle did not contain expected lib directory", libDir.exists() && libDir.isDirectory());
+		final File jarFile = new File(libDir, "commons-io-2.4.jar");
+		assertTrue("Did not find expected jar commons-io-2.4.jar in /lib", jarFile.exists());
+		assertEquals(185140L, jarFile.length());
+	}
+
+
 	private void assertBundledFileContents(String filename, String contents) throws IOException {
 		File f1 = new File(bundleTargetDir(), filename);
 		assertTrue(f1.exists());

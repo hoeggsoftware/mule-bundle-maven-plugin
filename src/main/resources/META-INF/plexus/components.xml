@@ -28,7 +28,7 @@
                                 software.hoegg.mule:mule-bundle-maven-plugin:bundle
                             </prepare-package>
                             <package>
-                                software.hoegg.mule:mule-bundle-maven-plugin:package
+                                org.mule.tools.maven:mule-app-maven-plugin:mule
                             </package>
                             <install>
                                 org.apache.maven.plugins:maven-install-plugin:install
