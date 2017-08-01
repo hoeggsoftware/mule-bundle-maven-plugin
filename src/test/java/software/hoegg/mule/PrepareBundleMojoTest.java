@@ -124,6 +124,15 @@ public class PrepareBundleMojoTest {
 		assertEquals(185140L, jarFile.length());
 	}
 
+	@Test
+	public void shouldNotCopyMuleDependenciesToLib() throws Exception {
+		execute(realisticBundleProjectDir());
+
+		File libDir = new File(bundleTargetDir(), "lib");
+		assertTrue("bundle did not contain expected lib directory", libDir.exists() && libDir.isDirectory());
+		final File jarFile = new File(libDir, "mule-core-3.8.4.jar");
+		assertFalse("Found unexpected jar mule-core-3.8.4.jar in /lib", jarFile.exists());
+	}
 
 	private void assertBundledFileContents(String filename, String contents) throws IOException {
 		File f1 = new File(bundleTargetDir(), filename);

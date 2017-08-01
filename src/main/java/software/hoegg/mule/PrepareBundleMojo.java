@@ -17,6 +17,9 @@ import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.components.io.fileselectors.FileSelector;
 import org.codehaus.plexus.components.io.fileselectors.IncludeExcludeFileSelector;
 import org.codehaus.plexus.util.FileUtils;
+import org.mule.tools.maven.plugin.app.ArtifactFilter;
+import org.mule.tools.maven.plugin.app.Exclusion;
+import org.mule.tools.maven.plugin.app.Inclusion;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -37,6 +40,12 @@ public class PrepareBundleMojo extends AbstractMojo {
 
 	@Parameter( defaultValue = "${project.build.directory}/mule-bundle", required = true)
 	protected File outputDirectory;
+
+	@Parameter
+	protected List<Inclusion> inclusions;
+
+	@Parameter
+	protected List<Exclusion> exclusions;
 
 	@Parameter( defaultValue = "**/*unbundled.xml")
 	protected String configExcludes;
@@ -120,11 +129,9 @@ public class PrepareBundleMojo extends AbstractMojo {
 	}
 
 	private Set<Artifact> getJarDependencies() {
-		return CollectionUtils.select(project.getArtifacts(), new Predicate<Artifact>() {
-			@Override public boolean evaluate(Artifact a) {
-				return "jar".equals(a.getType());
-			}
-		}, new HashSet<Artifact>());
+		ArtifactFilter filter = new ArtifactFilter(this.project, this.inclusions,
+			this.exclusions, true);
+		return filter.getArtifactsToArchive();
 	}
 
 	public class PrefixMuleConfigTransformer implements TransformZipUnArchiver.Transformer {

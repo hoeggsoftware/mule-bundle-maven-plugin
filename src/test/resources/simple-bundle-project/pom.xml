@@ -21,6 +21,8 @@
                 <configuration>
                     <project implementation="software.hoegg.mule.stubs.SimpleBundleProjectStub"/>
                     <outputDirectory>target/bundle-target/mule-bundle</outputDirectory>
+                    <inclusions></inclusions>
+                    <exclusions></exclusions>
                 </configuration>
             </plugin>
         </plugins>

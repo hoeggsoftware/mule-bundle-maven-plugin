@@ -22,6 +22,8 @@
                     <project implementation="software.hoegg.mule.stubs.TypicalBundleProjectStub"/>
                     <outputDirectory>target/bundle-target/mule-bundle</outputDirectory>
                     <configExcludes>**/*unbundled.xml</configExcludes>
+                    <inclusions></inclusions>
+                    <exclusions></exclusions>
                 </configuration>
             </plugin>
         </plugins>

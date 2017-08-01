@@ -6,8 +6,7 @@ import org.apache.maven.artifact.handler.DefaultArtifactHandler;
 import org.codehaus.plexus.PlexusTestCase;
 
 import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class TypicalBundleProjectStub extends AbstractBundleProjectStub {
 	public TypicalBundleProjectStub() {
@@ -34,6 +33,7 @@ public class TypicalBundleProjectStub extends AbstractBundleProjectStub {
 		final String jar = artifactId + "-" + version + ".jar";
 		final DefaultArtifact a = new DefaultArtifact(groupId, artifactId, version, "compile", "jar", null, new DefaultArtifactHandler());
 		a.setFile(new File(super.getBasedir() + "/src/test/resources/bin/" + jar));
+		a.setDependencyTrail(makeTrail(a));
 		return a;
 	}
 }
