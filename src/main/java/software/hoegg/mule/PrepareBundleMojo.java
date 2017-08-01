@@ -59,6 +59,20 @@ public class PrepareBundleMojo extends AbstractMojo {
 		getLog().info("Bundled mule configuration files: " + StringUtils.join(includedFiles, ","));
 		writeMuleDeployProperties(includedFiles);
 		bundleLibDependencies();
+		bundleResources();
+	}
+
+	private void bundleResources() throws MojoFailureException {
+		try {
+			FileUtils.copyDirectory(bundleSourceDir(), outputDirectory);
+		}
+		catch (IOException e) {
+			throw new MojoFailureException("Unable to copy bundle resources from src/main/bundle", e);
+		}
+	}
+
+	private File bundleSourceDir() {
+		return new File(project.getBasedir(), "src/main/bundle");
 	}
 
 	private void bundleLibDependencies() throws MojoFailureException {

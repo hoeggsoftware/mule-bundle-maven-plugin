@@ -134,6 +134,18 @@ public class PrepareBundleMojoTest {
 		assertFalse("Found unexpected jar mule-core-3.8.4.jar in /lib", jarFile.exists());
 	}
 
+	@Test
+	public void shouldBundleResources() throws Exception {
+		execute(realisticBundleProjectDir());
+
+		File sharedBundleConfigFile = new File(bundleTargetDir(), "shared-bundle-config.xml");
+		assertTrue("Did not find expected bundle configuration file shared-bundle-config.xml", sharedBundleConfigFile.exists());
+		final File bundleSourceDir = new File(realisticBundleProjectDir(), "src/main/bundle");
+		assertTrue(FileUtils.contentEquals(
+			new File(bundleSourceDir, "shared-bundle-config.xml"),
+			sharedBundleConfigFile));
+	}
+
 	private void assertBundledFileContents(String filename, String contents) throws IOException {
 		File f1 = new File(bundleTargetDir(), filename);
 		assertTrue(f1.exists());
