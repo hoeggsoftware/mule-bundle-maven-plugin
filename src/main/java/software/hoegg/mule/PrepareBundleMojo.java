@@ -2,7 +2,6 @@ package software.hoegg.mule;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Predicate;
-import org.apache.commons.collections4.Transformer;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.artifact.Artifact;
@@ -80,7 +79,7 @@ public class PrepareBundleMojo extends AbstractMojo {
 		if (! libDir.exists()) {
 			libDir.mkdirs();
 		}
-		for (Artifact a : getJarDependencies()) {
+		for (Artifact a : getLibDependencies()) {
 			try {
 				FileUtils.copyFileToDirectory(a.getFile(), libDir);
 			}
@@ -142,10 +141,18 @@ public class PrepareBundleMojo extends AbstractMojo {
 		}, new HashSet<Artifact>());
 	}
 
-	private Set<Artifact> getJarDependencies() {
+	private Set<Artifact> getLibDependencies() {
 		ArtifactFilter filter = new ArtifactFilter(this.project, this.inclusions,
 			this.exclusions, true);
-		return filter.getArtifactsToArchive();
+		return keepOnlyJarArtifacts(filter.getArtifactsToArchive());
+	}
+
+	private Set<Artifact> keepOnlyJarArtifacts(Set<Artifact> artifactsToArchive) {
+		return CollectionUtils.select(artifactsToArchive, new Predicate<Artifact>() {
+			@Override public boolean evaluate(Artifact a) {
+				return "jar".equals(a.getType());
+			}
+		}, new HashSet<Artifact>());
 	}
 
 	public class PrefixMuleConfigTransformer implements TransformZipUnArchiver.Transformer {

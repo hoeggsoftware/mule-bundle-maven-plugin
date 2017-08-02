@@ -28,7 +28,7 @@ public class TransformZipUnArchiver extends ZipUnArchiver {
 	};
 
 	@Override
-	protected void extractFile(File sourceFile, File destDirectory, InputStream compressedInputStream, String entryName, Date entryDate, boolean isDirectory, Integer mode) throws IOException, ArchiverException {
+	protected void extractFile(File sourceFile, File destDirectory, InputStream compressedInputStream, String entryName, Date entryDate, boolean isDirectory, Integer mode, String symlinkDestination) throws IOException, ArchiverException {
 		final EntryContext context = new EntryContext(sourceFile, destDirectory, entryName, entryDate, isDirectory, mode);
 		super.extractFile(
 			sourceFile,
@@ -37,7 +37,8 @@ public class TransformZipUnArchiver extends ZipUnArchiver {
 			transformer.transformEntryName(context),
 			transformer.transformEntryDate(context),
 			isDirectory,
-			mode);
+			mode,
+			symlinkDestination);
 	}
 
 	public void setTransformer(Transformer transformer) {

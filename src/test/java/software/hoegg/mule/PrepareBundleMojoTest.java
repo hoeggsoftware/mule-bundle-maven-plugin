@@ -135,6 +135,16 @@ public class PrepareBundleMojoTest {
 	}
 
 	@Test
+	public void shouldNotCopyZipDependenciesToLib() throws Exception {
+		execute(realisticBundleProjectDir());
+
+		File libDir = new File(bundleTargetDir(), "lib");
+		assertTrue("bundle did not contain expected lib directory", libDir.exists() && libDir.isDirectory());
+		final File zipFile = new File(libDir, "unwanted-1.0.0.zip");
+		assertFalse("Found unexpected zip unwanted-1.0.0.zip in /lib", zipFile.exists());
+	}
+
+	@Test
 	public void shouldBundleResources() throws Exception {
 		execute(realisticBundleProjectDir());
 
