@@ -1,25 +1,76 @@
-# Bundle your mule applications together for deployment
+Mule Bundle Maven Plugin
+====================
 
-[![Build Status](https://travis-ci.org/hoeggsoftware/mule-bundle-maven-plugin.svg?branch=master)](https://travis-ci.org/hoeggsoftware/mule-bundle-maven-plugin)
-[![Analytics](https://hoegg-ga-beacon.appspot.com/UA-76227345-2/mule-bundle-maven-plugin)](https://github.com/hoeggsoftware/ga-beacon)
+The Mule Bundle Maven Plugin allows you to package your Mule applications together into a single application bundle for
+deployment.
 
-# Phase: Validate
-1. Name collisions on global elements / spring beans
-2. Name collisions on configuration properties
-3. Path collisions on HTTP listeners
-4. Class collisions in `src/main/java`
-5. Name collisions for RAML files
+Maven Configuration
+----------------------------------------
+To generate a mule application bundle, create a new maven project. This project will serve as the application bundle,
+and will include each of the intended Mule applications as maven dependencies.
 
-# Phase: Process Resources
-1. Include bundle config files from `src/main/bundle`
-# Phase: Prepare Package
-1. Prefix and copy mule config files from dependencies
-2. filter out `*-unbundled.xml`
-3. Generate `mule-deploy.properties`
-4. Combine contents of `api/` 
-5. Combine all jars from `lib/` (or use maven to resolve dependencies)
-6. Combine classes from `classes/`
-# Phase: Package
-1. Create bundle application zip
-# Phase: Verify
-1. Check that all config files in `mule-deploy.properties` are in the zip?
+To make this work, configure the project to use this plugin, set the project's packaging to `mule-bundle`, and add
+dependencies for each of the applications you want included in the bundle.
+
+#### Packaging
+The bundle project must use `mule-bundle` as its packaging, which means it needs to generate a Mule Bundle artifact.
+Do this by including the `packaging` element in your `pom.xml`:
+
+```xml
+    <project ... > 
+        <groupId>com.smartcompany.mule</groupId>
+        <artifactId>our-mule-bundle</artifactId>
+        <version>1.0.2-SNAPSHOT</version>
+        <packaging>mule-bundle</packaging>
+```
+
+#### Plugin Configuration
+Your bundle project must also explicitly include this plugin. Add it to the `<plugins>` section of your pom: 
+```xml
+<build>
+    <plugins>
+        <plugin>
+            <groupId>software.hoegg.mule</groupId>
+            <artifactId>mule-bundle-maven-plugin</artifactId>
+            <version>1.0.0</version>
+            <extensions>true</extensions>
+        </plugin>
+    </plugins>
+</build>
+```
+The `extensions` element is essential, as it allows the plugin to let Maven know it can support the packaging type
+`mule-bundle` we just configured in the last step.
+
+#### Dependencies
+Now that we've got most of the paperwork done, we can actually start putting things into our bundle. We do this
+using Maven's built-in dependency support, which means we need to make sure we've released each of the applications
+we want to bundle. This means each of them is available in our maven repository, using a respectable, immutable version
+like 2.3.1, and without any suffix such as `SNAPSHOT`. 
+
+Our bundle dependencies might look something like this:
+
+```xml
+<dependencies>
+    <dependency>
+        <groupId>com.smartcompany.mule.microservice</groupId>
+        <artifactId>widget-inventory-system-api</artifactId>
+        <version>1.1.9</version>
+        <type>zip</type>
+    </dependency>
+    <dependency>
+        <groupId>com.smartcompany.mule.microservice</groupId>
+        <artifactId>widget-restocking-system-api</artifactId>
+        <version>1.0.0</version>
+        <type>zip</type>
+    </dependency>
+    <dependency>
+        <groupId>com.smartcompany.mule.microservice</groupId>
+        <artifactId>widget-replenishment-process-api</artifactId>
+        <version>1.0.3</version>
+        <type>zip</type>
+    </dependency>
+</dependencies>
+```
+
+We hope that you will be able to make use of this plugin. Please feel free to open isssues, or email us about any
+trouble you have getting it to work for you. 
