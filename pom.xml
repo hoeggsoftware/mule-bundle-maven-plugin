@@ -4,9 +4,10 @@
 
     <groupId>software.hoegg.mule</groupId>
     <artifactId>mule-bundle-maven-plugin</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>maven-plugin</packaging>
     <name>Mule Application Bundle Maven Plugin</name>
+    <url>https://github.com/hoeggsoftware/mule-bundle-maven-plugin</url>
     <description>Builds a Mule application by bundling other Mule applications</description>
     <prerequisites>
         <maven>3.3.9</maven>
