@@ -4,7 +4,7 @@
 
     <groupId>software.hoegg.mule</groupId>
     <artifactId>mule-bundle-maven-plugin</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
     <packaging>maven-plugin</packaging>
     <name>Mule Application Bundle Maven Plugin</name>
     <description>Builds a Mule application by bundling other Mule applications</description>
@@ -15,7 +15,7 @@
         <url>scm:git:git@github.com:hoeggsoftware/mule-bundle-maven-plugin.git</url>
         <connection>scm:git:git@github.com:hoeggsoftware/mule-bundle-maven-plugin.git</connection>
         <developerConnection>scm:git:git@github.com:hoeggsoftware/mule-bundle-maven-plugin.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>1.0.0</tag>
     </scm>
     <licenses>
         <license>
