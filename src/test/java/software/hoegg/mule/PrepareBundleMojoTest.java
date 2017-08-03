@@ -188,6 +188,29 @@ public class PrepareBundleMojoTest {
 			app2classFile));
 	}
 
+	@Test
+	public void shouldBundleApis() throws Exception {
+		execute(realisticBundleProjectDir());
+
+		File bundleApis = new File(bundleTargetDir(), "api");
+		assertTrue("Did not find expected bundle api directory", bundleApis.exists());
+		final File app1api1 = new File(bundleApis, "blue.raml");
+		final File app1api2 = new File(bundleApis, "orange.raml");
+		final File app2api1 = new File(bundleApis, "yellow.raml");
+		assertTrue("Missing expected RAML file from app1: " + app1api1.getAbsolutePath(), app1api1.exists());
+		assertTrue("Missing expected RAML file from app1: " + app1api2.getAbsolutePath(), app1api2.exists());
+		assertTrue("Missing expected RAML file from app2: " + app2api1.getAbsolutePath(), app2api1.exists());
+		assertTrue(FileUtils.contentEquals(
+			new File(bundledAppsDir(), "app1/api/blue.raml"),
+			app1api1));
+		assertTrue(FileUtils.contentEquals(
+			new File(bundledAppsDir(), "app1/api/orange.raml"),
+			app1api2));
+		assertTrue(FileUtils.contentEquals(
+			new File(bundledAppsDir(), "app2/api/yellow.raml"),
+			app2api1));
+	}
+
 	private void assertBundledFileContents(String filename, String contents) throws IOException {
 		File f1 = new File(bundleTargetDir(), filename);
 		assertTrue(f1.exists());

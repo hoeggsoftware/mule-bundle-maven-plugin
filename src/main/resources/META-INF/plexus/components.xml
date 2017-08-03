@@ -81,6 +81,16 @@
             </requirements>
         </component>
         <component>
+            <role>software.hoegg.mule.tasks.BundleApisTask</role>
+            <implementation>software.hoegg.mule.tasks.BundleApisTask</implementation>
+            <instantiation-strategy>per-lookup</instantiation-strategy>
+            <requirements>
+                <requirement>
+                    <role>software.hoegg.mule.TransformZipUnArchiver</role>
+                </requirement>
+            </requirements>
+        </component>
+        <component>
             <role>software.hoegg.mule.tasks.BundleLibsTask</role>
             <implementation>software.hoegg.mule.tasks.BundleLibsTask</implementation>
             <instantiation-strategy>per-lookup</instantiation-strategy>

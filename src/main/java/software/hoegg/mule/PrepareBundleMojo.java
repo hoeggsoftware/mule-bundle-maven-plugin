@@ -17,6 +17,7 @@ import org.codehaus.plexus.util.FileUtils;
 import org.mule.tools.maven.plugin.app.ArtifactFilter;
 import org.mule.tools.maven.plugin.app.Exclusion;
 import org.mule.tools.maven.plugin.app.Inclusion;
+import software.hoegg.mule.tasks.BundleApisTask;
 import software.hoegg.mule.tasks.BundleClassesTask;
 import software.hoegg.mule.tasks.BundleConfigFilesTask;
 import software.hoegg.mule.tasks.BundleLibsTask;
@@ -47,6 +48,9 @@ public class PrepareBundleMojo extends AbstractMojo {
 	@Component
 	protected BundleLibsTask bundleLibsTask;
 
+	@Component
+	protected BundleApisTask bundleApisTask;
+
 	@Parameter( defaultValue = "${project.build.directory}/mule-bundle", required = true)
 	protected File outputDirectory;
 
@@ -71,6 +75,7 @@ public class PrepareBundleMojo extends AbstractMojo {
 		getLog().info("Bundled mule configuration files: " + StringUtils.join(includedFiles, ","));
 		bundleClassesTask.bundleClasses(getZipDependencies(), outputDirectory);
 		bundleLibsTask.bundleLibDependencies(project, inclusions, exclusions, outputDirectory);
+		bundleApisTask.bundleApis(getZipDependencies(), outputDirectory);
 
 		writeMuleDeployProperties(includedFiles);
 		bundleResources();
