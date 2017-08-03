@@ -71,24 +71,34 @@
             </requirements>
         </component>
         <component>
-            <role>software.hoegg.mule.tasks.BundleClassesTask</role>
-            <implementation>software.hoegg.mule.tasks.BundleClassesTask</implementation>
+            <role>software.hoegg.mule.tasks.BundleDirectoryTask</role>
+            <role-hint>classes</role-hint>
+            <implementation>software.hoegg.mule.tasks.BundleDirectoryTask</implementation>
             <instantiation-strategy>per-lookup</instantiation-strategy>
             <requirements>
                 <requirement>
                     <role>software.hoegg.mule.TransformZipUnArchiver</role>
                 </requirement>
             </requirements>
+            <configuration>
+                <path>classes</path>
+                <includePattern>classes/**/*</includePattern>
+            </configuration>
         </component>
         <component>
-            <role>software.hoegg.mule.tasks.BundleApisTask</role>
-            <implementation>software.hoegg.mule.tasks.BundleApisTask</implementation>
+            <role>software.hoegg.mule.tasks.BundleDirectoryTask</role>
+            <role-hint>api</role-hint>
+            <implementation>software.hoegg.mule.tasks.BundleDirectoryTask</implementation>
             <instantiation-strategy>per-lookup</instantiation-strategy>
             <requirements>
                 <requirement>
                     <role>software.hoegg.mule.TransformZipUnArchiver</role>
                 </requirement>
             </requirements>
+            <configuration>
+                <path>api</path>
+                <includePattern>api/**/*</includePattern>
+            </configuration>
         </component>
         <component>
             <role>software.hoegg.mule.tasks.BundleLibsTask</role>
