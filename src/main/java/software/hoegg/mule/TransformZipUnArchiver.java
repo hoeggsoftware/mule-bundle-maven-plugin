@@ -1,5 +1,6 @@
 package software.hoegg.mule;
 
+import org.apache.maven.plugins.annotations.Component;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.zip.ZipUnArchiver;
 
