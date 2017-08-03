@@ -9,19 +9,23 @@ import software.hoegg.mule.TransformZipUnArchiver;
 import java.io.File;
 import java.util.Set;
 
-public class BundleClassesTask {
+public class BundleDirectoryTask {
+
 	@Component
 	protected TransformZipUnArchiver unArchiver;
 
-	public void bundleClasses(Set<Artifact> appArtifacts, File outputDirectory) {
-		File classesDir = new File(outputDirectory, "classes");
-		if (! classesDir.exists()) {
-			classesDir.mkdirs();
+	private String path;
+	private String includePattern;
+
+	public void bundle(Set<Artifact> appArtifacts, File outputDirectory) {
+		File dir = new File(outputDirectory, path);
+		if (! dir.exists()) {
+			dir.mkdirs();
 		}
 		unArchiver.setDestDirectory(outputDirectory);
 		unArchiver.setTransformer(TransformZipUnArchiver.NO_TRANSFORMER);
 		unArchiver.setFileSelectors(new FileSelector[] {
-			classesSelector()
+			selector()
 		});
 
 		for (Artifact appArtifact : appArtifacts) {
@@ -30,10 +34,10 @@ public class BundleClassesTask {
 		}
 	}
 
-	private IncludeExcludeFileSelector classesSelector() {
+	private IncludeExcludeFileSelector selector() {
 		IncludeExcludeFileSelector s = new IncludeExcludeFileSelector();
 		s.setIncludes(new String[] {
-			"classes/**/*"
+			includePattern
 		});
 		return s;
 	}

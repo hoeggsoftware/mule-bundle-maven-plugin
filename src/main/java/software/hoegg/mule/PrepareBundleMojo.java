@@ -14,10 +14,9 @@ import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.util.FileUtils;
-import org.mule.tools.maven.plugin.app.ArtifactFilter;
 import org.mule.tools.maven.plugin.app.Exclusion;
 import org.mule.tools.maven.plugin.app.Inclusion;
-import software.hoegg.mule.tasks.BundleClassesTask;
+import software.hoegg.mule.tasks.BundleDirectoryTask;
 import software.hoegg.mule.tasks.BundleConfigFilesTask;
 import software.hoegg.mule.tasks.BundleLibsTask;
 
@@ -42,10 +41,13 @@ public class PrepareBundleMojo extends AbstractMojo {
 	protected BundleConfigFilesTask bundleConfigFilesTask;
 
 	@Component
-	protected BundleClassesTask bundleClassesTask;
-
-	@Component
 	protected BundleLibsTask bundleLibsTask;
+
+	@Component(hint = "classes")
+	protected BundleDirectoryTask bundleClassesTask;
+
+	@Component(hint = "api")
+	protected BundleDirectoryTask bundleApisTask;
 
 	@Parameter( defaultValue = "${project.build.directory}/mule-bundle", required = true)
 	protected File outputDirectory;
@@ -69,8 +71,9 @@ public class PrepareBundleMojo extends AbstractMojo {
 			outputDirectory,
 			configExcludes);
 		getLog().info("Bundled mule configuration files: " + StringUtils.join(includedFiles, ","));
-		bundleClassesTask.bundleClasses(getZipDependencies(), outputDirectory);
 		bundleLibsTask.bundleLibDependencies(project, inclusions, exclusions, outputDirectory);
+		bundleClassesTask.bundle(getZipDependencies(), outputDirectory);
+		bundleApisTask.bundle(getZipDependencies(), outputDirectory);
 
 		writeMuleDeployProperties(includedFiles);
 		bundleResources();
