@@ -171,7 +171,6 @@ public class PrepareBundleMojoTest {
 	}
 
 	@Test
-	@Ignore("This test is ready to go, now implement the code!")
 	public void shouldBundleClasses() throws Exception {
 		execute(realisticBundleProjectDir());
 

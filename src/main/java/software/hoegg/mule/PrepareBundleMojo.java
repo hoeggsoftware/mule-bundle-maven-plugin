@@ -59,6 +59,7 @@ public class PrepareBundleMojo extends AbstractMojo {
 		writeMuleDeployProperties(includedFiles);
 		bundleLibDependencies();
 		bundleResources();
+		bundleClasses();
 	}
 
 	private void bundleResources() throws MojoFailureException {
@@ -86,6 +87,23 @@ public class PrepareBundleMojo extends AbstractMojo {
 			catch (IOException e) {
 				throw new MojoFailureException("Unable to copy dependency to bundle lib", e);
 			}
+		}
+	}
+
+	private void bundleClasses() {
+		File classesDir = new File(outputDirectory, "classes");
+		if (! classesDir.exists()) {
+			classesDir.mkdirs();
+		}
+		unArchiver.setDestDirectory(outputDirectory);
+		unArchiver.setTransformer(TransformZipUnArchiver.NO_TRANSFORMER);
+		unArchiver.setFileSelectors(new FileSelector[] {
+			classesSelector()
+		});
+
+		for (Artifact appArtifact : getZipDependencies()) {
+			unArchiver.setSourceFile(appArtifact.getFile());
+			unArchiver.extract();
 		}
 	}
 
@@ -130,6 +148,14 @@ public class PrepareBundleMojo extends AbstractMojo {
 		if (StringUtils.isNotEmpty(configExcludes)) {
 			s.setExcludes(configExcludes.split(","));
 		}
+		return s;
+	}
+
+	private IncludeExcludeFileSelector classesSelector() {
+		IncludeExcludeFileSelector s = new IncludeExcludeFileSelector();
+		s.setIncludes(new String[] {
+			"classes/**/*"
+		});
 		return s;
 	}
 
