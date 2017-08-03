@@ -44,10 +44,9 @@ The `extensions` element is essential, as it allows the plugin to let Maven know
 `mule-bundle` we just configured in the last step.
 
 #### Dependencies
-Now that we've got most of the paperwork done, we can actually start putting things into our bundle. We do this
-using Maven's built-in dependency support, which means we need to make sure we've released each of the applications
-we want to bundle. This means each of them is available in our maven repository, using a respectable, immutable version
-like 2.3.1, and without any suffix such as `SNAPSHOT`. 
+Include applications in your bundle by adding them to the `<dependencies>` section of your pom, using the `groupId`
+, `artifactId`, and `version` to identify them. Because Mule applications are packaged as zip files, specify 
+`<type>zip</type>` for each of them.
 
 Our bundle dependencies might look something like this:
 
