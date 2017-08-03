@@ -34,7 +34,7 @@ Your bundle project must also explicitly include this plugin. Add it to the `<pl
         <plugin>
             <groupId>software.hoegg.mule</groupId>
             <artifactId>mule-bundle-maven-plugin</artifactId>
-            <version>1.0.0</version>
+            <version>1.1.0</version>
             <extensions>true</extensions>
         </plugin>
     </plugins>
