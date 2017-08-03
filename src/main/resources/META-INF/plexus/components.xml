@@ -60,5 +60,30 @@
             <implementation>software.hoegg.mule.TransformZipUnArchiver</implementation>
             <instantiation-strategy>per-lookup</instantiation-strategy>
         </component>
+        <component>
+            <role>software.hoegg.mule.tasks.BundleConfigFilesTask</role>
+            <implementation>software.hoegg.mule.tasks.BundleConfigFilesTask</implementation>
+            <instantiation-strategy>per-lookup</instantiation-strategy>
+            <requirements>
+                <requirement>
+                    <role>software.hoegg.mule.TransformZipUnArchiver</role>
+                </requirement>
+            </requirements>
+        </component>
+        <component>
+            <role>software.hoegg.mule.tasks.BundleClassesTask</role>
+            <implementation>software.hoegg.mule.tasks.BundleClassesTask</implementation>
+            <instantiation-strategy>per-lookup</instantiation-strategy>
+            <requirements>
+                <requirement>
+                    <role>software.hoegg.mule.TransformZipUnArchiver</role>
+                </requirement>
+            </requirements>
+        </component>
+        <component>
+            <role>software.hoegg.mule.tasks.BundleLibsTask</role>
+            <implementation>software.hoegg.mule.tasks.BundleLibsTask</implementation>
+            <instantiation-strategy>per-lookup</instantiation-strategy>
+        </component>
     </components>
 </component-set>

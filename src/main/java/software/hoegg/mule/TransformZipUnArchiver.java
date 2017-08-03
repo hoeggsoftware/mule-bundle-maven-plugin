@@ -1,5 +1,6 @@
 package software.hoegg.mule;
 
+import org.apache.maven.plugins.annotations.Component;
 import org.codehaus.plexus.archiver.ArchiverException;
 import org.codehaus.plexus.archiver.zip.ZipUnArchiver;
 
@@ -12,20 +13,7 @@ import java.util.Date;
 import java.util.List;
 
 public class TransformZipUnArchiver extends ZipUnArchiver {
-	private Transformer transformer = new Transformer() {
-
-		public File transformDestinationDirectory(EntryContext context) {
-			return context.getDestinationDirectory();
-		}
-
-		public String transformEntryName(EntryContext context) {
-			return context.getEntryName();
-		}
-
-		public Date transformEntryDate(EntryContext context) {
-			return context.getEntryDate();
-		}
-	};
+	private Transformer transformer = NO_TRANSFORMER;
 
 	@Override
 	protected void extractFile(File sourceFile, File destDirectory, InputStream compressedInputStream, String entryName, Date entryDate, boolean isDirectory, Integer mode, String symlinkDestination) throws IOException, ArchiverException {
@@ -50,6 +38,21 @@ public class TransformZipUnArchiver extends ZipUnArchiver {
 		String transformEntryName(EntryContext context);
 		Date transformEntryDate(EntryContext context);
 	}
+
+	public static Transformer NO_TRANSFORMER = new Transformer() {
+
+		public File transformDestinationDirectory(EntryContext context) {
+			return context.getDestinationDirectory();
+		}
+
+		public String transformEntryName(EntryContext context) {
+			return context.getEntryName();
+		}
+
+		public Date transformEntryDate(EntryContext context) {
+			return context.getEntryDate();
+		}
+	};
 
 	public static class EntryContext {
 		private final File sourceFile;

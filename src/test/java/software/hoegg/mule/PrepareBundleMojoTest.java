@@ -42,6 +42,7 @@ public class PrepareBundleMojoTest {
 			ZipOutputStream zipFile = new ZipOutputStream(new FileOutputStream(applicationZip));
 			try {
 				compressSubDirectories(appDir, appDir, zipFile);
+				addAnyClasses(appDir.getName(), zipFile);
 			} finally {
 				IOUtils.closeQuietly(zipFile);
 			}
@@ -56,6 +57,19 @@ public class PrepareBundleMojoTest {
 				zip.putNextEntry(
 					new ZipEntry(f.getAbsolutePath().replace(root.getAbsolutePath() + "/", "")));
 				FileInputStream in = new FileInputStream(f);
+				IOUtils.copy(in, zip);
+				IOUtils.closeQuietly(in);
+			}
+		}
+	}
+
+	private void addAnyClasses(String appName, ZipOutputStream zip) throws IOException {
+		File packageDir = new File(targetTestClassesDir(), appName);
+		if (packageDir.exists() && packageDir.isDirectory()) {
+			for (File classFile : packageDir.listFiles()) {
+				zip.putNextEntry(
+					new ZipEntry("classes/" + appName + "/" + classFile.getName()));
+				FileInputStream in = new FileInputStream(classFile);
 				IOUtils.copy(in, zip);
 				IOUtils.closeQuietly(in);
 			}
@@ -156,6 +170,24 @@ public class PrepareBundleMojoTest {
 			sharedBundleConfigFile));
 	}
 
+	@Test
+	public void shouldBundleClasses() throws Exception {
+		execute(realisticBundleProjectDir());
+
+		File bundleClasses = new File(bundleTargetDir(), "classes");
+		assertTrue("Did not find expected bundle classes directory", bundleClasses.exists());
+		final File app1classFile = new File(bundleClasses, "app1/AppOneValidation.class");
+		final File app2classFile = new File(bundleClasses, "app2/AppTwoModelWidget.class");
+		assertTrue("Missing expected class file from app1: " + app1classFile.getAbsolutePath(), app1classFile.exists());
+		assertTrue("Missing expected class file from app2: " + app2classFile.getAbsolutePath(), app2classFile.exists());
+		assertTrue(FileUtils.contentEquals(
+			new File(targetTestClassesDir(), "app1/AppOneValidation.class"),
+			app1classFile));
+		assertTrue(FileUtils.contentEquals(
+			new File(targetTestClassesDir(), "app2/AppTwoModelWidget.class"),
+			app2classFile));
+	}
+
 	private void assertBundledFileContents(String filename, String contents) throws IOException {
 		File f1 = new File(bundleTargetDir(), filename);
 		assertTrue(f1.exists());
@@ -190,8 +222,13 @@ public class PrepareBundleMojoTest {
 	}
 
 	private File bundledAppsDir() {
+		return new File( targetTestClassesDir(),
+			"bundled-apps");
+	}
+
+	private File targetTestClassesDir() {
 		return new File( basedir,
-			"target/test-classes/bundled-apps");
+			"target/test-classes");
 	}
 
 	private File pluginTestDir() {
