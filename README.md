@@ -1,5 +1,7 @@
 Mule Bundle Maven Plugin
 ====================
+[![Build Status](https://travis-ci.org/hoeggsoftware/mule-bundle-maven-plugin.svg?branch=master)](https://travis-ci.org/hoeggsoftware/mule-bundle-maven-plugin)
+[![Analytics](https://hoegg-ga-beacon.appspot.com/UA-76227345-2/mule-bundle-maven-plugin)](https://github.com/hoeggsoftware/ga-beacon)
 
 The Mule Bundle Maven Plugin allows you to package your Mule applications together into a single application bundle for
 deployment.
