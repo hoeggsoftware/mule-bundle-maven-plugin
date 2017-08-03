@@ -73,5 +73,10 @@ Our bundle dependencies might look something like this:
 </dependencies>
 ```
 
+#### Including files in the bundle
+If you need to include files in the bundle that are not part of an included application, you can put them in
+`/src/main/bundle`. You might use this to create a single HTTP listener or Database Configuration that is used
+by more than one of the applications in the bundle. 
+
 We hope that you will be able to make use of this plugin. Please feel free to open isssues, or email us about any
 trouble you have getting it to work for you. 
