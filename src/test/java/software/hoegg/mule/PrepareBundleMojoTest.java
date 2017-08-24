@@ -122,7 +122,7 @@ public class PrepareBundleMojoTest {
 		Properties deployProps = getBundleMuleDeployProperties();
 		assertTrue("Missing expected property config.resources", deployProps.containsKey("config.resources"));
 		List<String> configResources = Arrays.asList(deployProps.getProperty("config.resources").split(","));
-		assertThat(configResources, containsInAnyOrder("shared-bundle-config.xml"));
+		assertThat(configResources, hasItem("shared-bundle-config.xml"));
 	 }
 
 	@Test
