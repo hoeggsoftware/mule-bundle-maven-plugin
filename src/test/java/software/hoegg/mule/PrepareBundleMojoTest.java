@@ -115,6 +115,15 @@ public class PrepareBundleMojoTest {
 
 		assertThat(Arrays.asList(bundleTargetDir().list()), not(hasItem(containsString( "unbundled"))));
 	}
+	
+	@Test
+	 public void shouldIncludeBundledResourcesInMuleDeployProperties() throws Exception {
+		execute(realisticBundleProjectDir());
+		Properties deployProps = getBundleMuleDeployProperties();
+		assertTrue("Missing expected property config.resources", deployProps.containsKey("config.resources"));
+		List<String> configResources = Arrays.asList(deployProps.getProperty("config.resources").split(","));
+		assertThat(configResources, hasItem("shared-bundle-config.xml"));
+	 }
 
 	@Test
 	public void shouldCopyConfigurationFiles() throws Exception {

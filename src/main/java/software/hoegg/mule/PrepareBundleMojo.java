@@ -75,13 +75,17 @@ public class PrepareBundleMojo extends AbstractMojo {
 		bundleClassesTask.bundle(getZipDependencies(), outputDirectory);
 		bundleApisTask.bundle(getZipDependencies(), outputDirectory);
 
-		writeMuleDeployProperties(includedFiles);
-		bundleResources();
+		List<String> bundleFiles = bundleResources();
+		bundleFiles.addAll(includedFiles);
+		//get the bundle source files and add the files to mule-deploy properties
+		writeMuleDeployProperties(bundleFiles);
 	}
 
-	private void bundleResources() throws MojoFailureException {
+	private List<String> bundleResources() throws MojoFailureException {
 		try {
-			FileUtils.copyDirectory(bundleSourceDir(), outputDirectory);
+			File bundleSourceDirectory = bundleSourceDir();
+			FileUtils.copyDirectory(bundleSourceDirectory, outputDirectory);
+			return (bundleSourceDirectory.exists()?FileUtils.getFileNames(bundleSourceDirectory, "**/*.xml", "", false): new ArrayList<String>());
 		}
 		catch (IOException e) {
 			throw new MojoFailureException("Unable to copy bundle resources from src/main/bundle", e);
